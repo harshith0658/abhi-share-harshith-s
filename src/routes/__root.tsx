@@ -9,9 +9,13 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { MockStoreProvider } from "@/lib/mock-store";
+import { SiteHeader } from "@/components/site-header";
+import { Logo } from "@/components/logo";
 
 function NotFoundComponent() {
   return (
@@ -78,16 +82,29 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "AbhiShare — Travel together. Go further." },
+      {
+        name: "description",
+        content:
+          "AbhiShare connects people travelling the same direction. Share rides on two-wheelers, cars and seven-seaters, split travel costs and make every journey count.",
+      },
+      { name: "author", content: "AbhiShare" },
+      { property: "og:title", content: "AbhiShare — Share the ride. Split the cost." },
+      {
+        property: "og:description",
+        content:
+          "A safer, smarter and more affordable way to travel. Connect with verified people, share rides and split travel costs.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
@@ -100,6 +117,39 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
+function SiteFooter() {
+  return (
+    <footer className="border-t border-border bg-card">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between">
+        <div className="space-y-2">
+          <Logo />
+          <p className="max-w-xs text-sm text-muted-foreground">
+            Share more. Travel smarter. Save more — a peer-to-peer vehicle sharing platform for
+            two-wheelers, cars and seven-seaters.
+          </p>
+        </div>
+        <nav className="flex flex-wrap gap-x-8 gap-y-2 text-sm font-semibold text-foreground/80" aria-label="Footer">
+          <Link to="/" className="hover:text-primary">
+            Home
+          </Link>
+          <Link to="/find-ride" className="hover:text-primary">
+            Find a Ride
+          </Link>
+          <Link to="/create-ride" className="hover:text-primary">
+            Create a Ride
+          </Link>
+          <Link to="/wallet" className="hover:text-primary">
+            Wallet
+          </Link>
+        </nav>
+      </div>
+      <div className="border-t border-border py-4 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} AbhiShare · A product of Abhinav Tech Transforms (OPC) Pvt. Ltd. · Demo build with mock data
+      </div>
+    </footer>
+  );
+}
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
@@ -120,8 +170,17 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <MockStoreProvider>
+        <div className="flex min-h-screen flex-col">
+          <SiteHeader />
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <SiteFooter />
+        </div>
+        <Toaster richColors position="top-center" />
+      </MockStoreProvider>
     </QueryClientProvider>
   );
 }

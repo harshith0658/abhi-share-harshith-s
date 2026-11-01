@@ -5,6 +5,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 import {
   PLATFORM_FEE_RATE,
+  USER_VEHICLES,
   WALLET_NEGATIVE_FLOOR,
   getInitialRides,
   getInitialWalletTxns,
@@ -72,14 +73,7 @@ export function MockStoreProvider({ children }: { children: ReactNode }) {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [user, setUser] = useState<MockUser | null>(null);
 
-  const myVehicles = useMemo(
-    () => [
-      { id: "veh-1", model: "Honda Activa 6G", category: "two-wheeler", plate: "AP 28 Q 4321", capacity: 1 },
-      { id: "veh-2", model: "Maruti Swift VXi", category: "five-seater", plate: "TS 09 EF 8892", capacity: 4 },
-      { id: "veh-3", model: "Toyota Innova Crysta", category: "seven-seater", plate: "AP 39 C 1108", capacity: 6 },
-    ] as Vehicle[],
-    [],
-  );
+  const myVehicles = useMemo(() => USER_VEHICLES, []);
 
   const walletBalance = useMemo(
     () => walletTxns.reduce((sum, t) => sum + t.amount, 0),
